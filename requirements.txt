@@ -2,4 +2,4 @@ python-telegram-bot
 pandas
 openpyxl
 python-dotenv
-
+python-telegram-bot[webhooks]
