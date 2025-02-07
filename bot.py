@@ -2,23 +2,13 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 import csv
 from datetime import datetime
+from zoneinfo import ZoneInfo  # Para Python 3.9+
 import os
-from dotenv import load_dotenv
-from datetime import datetime
-from zoneinfo import ZoneInfo
 
 # Define tu zona horaria
 zona_horaria = ZoneInfo('America/Mexico_City')  # Cambia esto a tu zona horaria
 
-# Obtén la hora actual en tu zona horaria
-now = datetime.now(zona_horaria)
-fecha = now.strftime('%Y-%m-%d')
-hora = now.strftime('%H:%M:%S')
-
-# Carga las variables de entorno desde .env
-load_dotenv()
-
-# Reemplaza 'YOUR_TELEGRAM_BOT_TOKEN' con el token de tu bot
+# Accede al token desde las variables de entorno
 TOKEN = os.getenv('TOKEN')
 
 data_file = 'bus_data.csv'
@@ -30,7 +20,6 @@ if not os.path.exists(data_file):
         writer.writerow(['Fecha', 'Hora', 'Tipo'])
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Crea el teclado con botones persistentes
     keyboard = [
         [InlineKeyboardButton("Bus Subida", callback_data='subida')],
         [InlineKeyboardButton("Bus Bajada", callback_data='bajada')]
@@ -43,7 +32,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     tipo = 'Subida' if query.data == 'subida' else 'Bajada'
-    now = datetime.now()
+    now = datetime.now(zona_horaria)  # Usa la zona horaria definida
     fecha = now.strftime('%Y-%m-%d')
     hora = now.strftime('%H:%M:%S')
 
