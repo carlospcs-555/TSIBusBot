@@ -1,20 +1,22 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
-import pandas as pd
+import csv
 from datetime import datetime
 import os
 
 # Reemplaza 'YOUR_TELEGRAM_BOT_TOKEN' con el token de tu bot
-TOKEN = '7863553522:AAF8TowMqtghdoWtYUK--7Oazf94_PNSGVA'
+TOKEN = '7574137450:AAHIXbk7r7khglTe2lN6IF3odhw9AYm-HW4'
 
-data_file = 'bus_data.xlsx'
+data_file = 'bus_data.csv'
 
-# Inicializa el archivo Excel si no existe
+# Inicializa el archivo CSV si no existe
 if not os.path.exists(data_file):
-    df = pd.DataFrame(columns=['Fecha', 'Hora', 'Tipo'])
-    df.to_excel(data_file, index=False)
+    with open(data_file, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Fecha', 'Hora', 'Tipo'])
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Crea el teclado con botones persistentes
     keyboard = [
         [InlineKeyboardButton("Bus Subida", callback_data='subida')],
         [InlineKeyboardButton("Bus Bajada", callback_data='bajada')]
@@ -25,20 +27,30 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    
+
     tipo = 'Subida' if query.data == 'subida' else 'Bajada'
     now = datetime.now()
     fecha = now.strftime('%Y-%m-%d')
     hora = now.strftime('%H:%M:%S')
 
-    # Guarda los datos en Excel
-    df = pd.read_excel(data_file)
-    df = pd.concat([df, pd.DataFrame([[fecha, hora, tipo]], columns=['Fecha', 'Hora', 'Tipo'])], ignore_index=True)
-    df.to_excel(data_file, index=False)
+    # Guarda los datos en el archivo CSV
+    with open(data_file, mode='a', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow([fecha, hora, tipo])
 
-    '''await query.edit_message_text(text=f"Registrado: {tipo} a las {hora}")'''
+    # Muestra un mensaje de confirmación
+    await query.edit_message_text(text=f"Registrado: {tipo} a las {hora}")
+
+    # Vuelve a mostrar los botones persistentes
+    keyboard = [
+        [InlineKeyboardButton("Bus Subida", callback_data='subida')],
+        [InlineKeyboardButton("Bus Bajada", callback_data='bajada')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.message.reply_text('Selecciona una opción:', reply_markup=reply_markup)
 
 async def descargar(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Envía el archivo CSV al usuario
     await update.message.reply_document(document=open(data_file, 'rb'))
 
 app = ApplicationBuilder().token(TOKEN).build()
