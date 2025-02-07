@@ -3,9 +3,13 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 import csv
 from datetime import datetime
 import os
+from dotenv import load_dotenv
+
+# Carga las variables de entorno desde .env
+load_dotenv()
 
 # Reemplaza 'YOUR_TELEGRAM_BOT_TOKEN' con el token de tu bot
-TOKEN = '7574137450:AAHIXbk7r7khglTe2lN6IF3odhw9AYm-HW4'
+TOKEN = os.getenv('TOKEN')
 
 data_file = 'bus_data.csv'
 
