@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 
 # Reemplaza 'YOUR_TELEGRAM_BOT_TOKEN' con el token de tu bot
-TOKEN = '7863553522:AAFwIEu0Y6Ehi9Hs63Z8HS79ciYznyrMvXA'
+TOKEN = '7863553522:AAF8TowMqtghdoWtYUK--7Oazf94_PNSGVA'
 
 data_file = 'bus_data.xlsx'
 
