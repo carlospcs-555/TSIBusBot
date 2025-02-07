@@ -4,6 +4,16 @@ import csv
 from datetime import datetime
 import os
 from dotenv import load_dotenv
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+# Define tu zona horaria
+zona_horaria = ZoneInfo('America/Mexico_City')  # Cambia esto a tu zona horaria
+
+# Obtén la hora actual en tu zona horaria
+now = datetime.now(zona_horaria)
+fecha = now.strftime('%Y-%m-%d')
+hora = now.strftime('%H:%M:%S')
 
 # Carga las variables de entorno desde .env
 load_dotenv()
