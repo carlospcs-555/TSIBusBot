@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Define tu zona horaria
-zona_horaria = ZoneInfo('America/Mexico_City')  # Cambia esto a tu zona horaria
+zona_horaria = ZoneInfo('America/Guayaquil')  # Cambia esto a tu zona horaria
 
 # Accede al token desde las variables de entorno
 TOKEN = os.getenv('TOKEN')
